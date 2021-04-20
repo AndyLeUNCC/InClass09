@@ -7,7 +7,10 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +33,12 @@ import java.util.ArrayList;
 public class GradeListFragment extends Fragment {
 
     GradeListFragmentListener mListener;
+    RecyclerView recyclerGrades;
+    LinearLayoutManager layoutManager;
+    GradeRecyclerViewAdapter adapter;
+    TextView txtGPA, txtHours;
+    AppDatabase db;
+
     private final String TAG = "GradeListFragment";
 
 
@@ -91,11 +101,11 @@ public class GradeListFragment extends Fragment {
     }
 
     public class GradeRecyclerViewAdapter extends RecyclerView.Adapter<GradeRecyclerViewAdapter.ViewForumHolder> {
-        ArrayList<Grade> grades;
+        ArrayList<Grade> gradesList;
         Context context;
         public GradeRecyclerViewAdapter(Context context, ArrayList<Grade> grades){
             this.context = context;
-            this.grades = grades;
+            this.gradesList = grades;
 
         }
 
@@ -110,37 +120,48 @@ public class GradeListFragment extends Fragment {
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onBindViewHolder(@NonNull ViewForumHolder holder, int position) {
-//            String user = userList.get(position);
-//            String userid = userIdList.get(position);
-//            holder.setupRowItem(userid,user);
+              Grade grade = gradesList.get(position);
+              holder.setupRowItem(grade);
         }
 
         @Override
         public int getItemCount() {
-            //return userIdList.size();
-            return 0;
+            return gradesList.size();
         }
 
         public class ViewForumHolder extends RecyclerView.ViewHolder {
-            String username;
-            TextView txtName;
-            String userId;
+            Grade grade;
+            TextView txtGrade, txtNum, txtName, txtHours;
+            ImageView imgDelete;
 
 
             public ViewForumHolder(View view) {
                 super(view);
-                //txtName = view.findViewById(R.id.txtNameofUser);
-
+                txtName = view.findViewById(R.id.txtName);
+                txtNum = view.findViewById(R.id.txtCourseNum);
+                txtGrade = view.findViewById(R.id.txtGradeLetter);
+                txtHours = view.findViewById(R.id.txtCreditHours);
+                imgDelete = view.findViewById(R.id.imageDelete);
+                imgDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        db.gradeDao().delete(grade);
+                    }
+                });
 
 
             }
 
             @RequiresApi(api = Build.VERSION_CODES.O)
-            public void setupRowItem( String userID,  String user){
+            public void setupRowItem(Grade grade){
 
-                this.username = user;
-                txtName.setText(username);
-                userId = userID;
+                this.grade = grade;
+                txtName.setText(grade.courseName);
+                txtNum.setText(grade.courseNumber);
+                txtGrade.setText(grade.courseGrade + "");
+                txtHours.setText(grade.creditHours + " Credit Hours");
+
+
 
             }
         }
@@ -154,6 +175,22 @@ public class GradeListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_grade_list, container, false);
+        db = Room.databaseBuilder(getContext(), AppDatabase.class, "grade.db")
+                .allowMainThreadQueries()
+                .fallbackToDestructiveMigration()
+                .build();
+        txtGPA = view.findViewById(R.id.txtGPA);
+        txtHours = view.findViewById(R.id.txtHours);
+        recyclerGrades = view.findViewById(R.id.recyclerCourseList);
+        layoutManager = new LinearLayoutManager(getContext());
+        recyclerGrades.setLayoutManager(layoutManager);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerGrades.getContext(),
+                layoutManager.getOrientation());
+        recyclerGrades.addItemDecoration(dividerItemDecoration);
+        ArrayList<Grade> grades = (ArrayList<Grade>) db.gradeDao().getAll();
+        adapter = new GradeRecyclerViewAdapter(getContext(), grades);
+        recyclerGrades.setAdapter(adapter);
+
         return view;
     }
 }
