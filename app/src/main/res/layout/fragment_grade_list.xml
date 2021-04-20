@@ -11,9 +11,9 @@
         android:id="@+id/txtGPA"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="205dp"
-        android:layout_marginLeft="205dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginStart="204dp"
+        android:layout_marginLeft="204dp"
+        android:layout_marginTop="68dp"
         android:gravity="center|center_horizontal|center_vertical"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,4 +30,26 @@
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtGPA" />
+
+    <TextView
+        android:id="@+id/txtCourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:fontFamily="sans-serif-black"
+        android:text="Courses"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtHours" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerCourseList"
+        android:layout_width="409dp"
+        android:layout_height="407dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtCourse" />
 </androidx.constraintlayout.widget.ConstraintLayout>

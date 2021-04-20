@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity implements GradeListFragment.GradeListFragmentListener {
+public class MainActivity extends AppCompatActivity implements GradeListFragment.GradeListFragmentListener, AddCourseFragment.AddCourseFragmentListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +19,14 @@ public class MainActivity extends AppCompatActivity implements GradeListFragment
     public void AddCourseFragment() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.containerView, AddCourseFragment.newInstance())
+                .addToBackStack(null)
                 .commit();
     }
+
+    @Override
+    public void BackFragment() {
+        getSupportFragmentManager().popBackStack();
+    }
+
 
 }
