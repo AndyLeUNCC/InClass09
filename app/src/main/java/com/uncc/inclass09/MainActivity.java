@@ -3,6 +3,13 @@ package com.uncc.inclass09;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+/**
+ * Inclass09
+ * File Name:MainActivity.java
+ * Full Name of the student:
+ * 1. Sai Kandimalla
+ * 2. Andy Le
+ */
 
 public class MainActivity extends AppCompatActivity implements GradeListFragment.GradeListFragmentListener, AddCourseFragment.AddCourseFragmentListener{
 

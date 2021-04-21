@@ -3,7 +3,13 @@ package com.uncc.inclass09;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-
+/**
+ * Inclass09
+ * File Name:Grade.java
+ * Full Name of the student:
+ * 1. Sai Kandimalla
+ * 2. Andy Le
+ */
 @Entity(tableName = "Grades")
 public class Grade {
     @PrimaryKey(autoGenerate = true)

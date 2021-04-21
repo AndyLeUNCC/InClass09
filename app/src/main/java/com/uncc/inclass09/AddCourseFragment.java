@@ -18,12 +18,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.prefs.BackingStoreException;
-
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link AddCourseFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Inclass09
+ * File Name:AppCourseFragment.java
+ * Full Name of the student:
+ * 1. Sai Kandimalla
+ * 2. Andy Le
  */
+
 public class AddCourseFragment extends Fragment {
     Button btnSubmit;
     EditText edtCourseNum, edtCourseName, edtCreditHours;
@@ -73,6 +75,7 @@ public class AddCourseFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_course, container, false);
+        getActivity().setTitle("Add Course");
         btnSubmit = view.findViewById(R.id.btnSubmit);
         edtCourseName = view.findViewById(R.id.editTextCourseName);
         edtCourseNum = view.findViewById(R.id.editTextCourseNumber);

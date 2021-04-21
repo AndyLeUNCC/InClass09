@@ -26,18 +26,23 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link GradeListFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Inclass09
+ * File Name:GradeListFragment.java
+ * Full Name of the student:
+ * 1. Sai Kandimalla
+ * 2. Andy Le
  */
+
 public class GradeListFragment extends Fragment {
 
     GradeListFragmentListener mListener;
     RecyclerView recyclerGrades;
     LinearLayoutManager layoutManager;
     GradeRecyclerViewAdapter adapter;
-    TextView txtGPA, txtHours;
+    TextView txtGPAF, txtHoursF;
     AppDatabase db;
+    float intTotalGPA;
+    float intCredit;
 
     private final String TAG = "GradeListFragment";
 
@@ -109,6 +114,15 @@ public class GradeListFragment extends Fragment {
 
         }
 
+        public void removeItem(int position){
+            gradesList.remove(position);
+            txtGPAF.setText("");
+            txtHoursF.setText("");
+            intCredit = 0;
+            intTotalGPA=0;
+            notifyDataSetChanged();
+        }
+
         @Override
         public ViewForumHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
@@ -121,7 +135,22 @@ public class GradeListFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull ViewForumHolder holder, int position) {
               Grade grade = gradesList.get(position);
-              holder.setupRowItem(grade);
+              int credit = grade.creditHours;
+              if(grade.courseGrade == 'A'){
+                  intTotalGPA+= 4 * credit;
+              } else if(grade.courseGrade == 'B'){
+                  intTotalGPA+= 3 * credit;
+              } else if(grade.courseGrade == 'C'){
+                  intTotalGPA+= 2 * credit;
+              } else if(grade.courseGrade == 'D'){
+                  intTotalGPA+= 1 * credit;
+              }
+              intCredit += grade.creditHours;
+              if((position+1) == getItemCount()){
+                  txtGPAF.setText((intTotalGPA/intCredit) + " GPA");
+                  txtHoursF.setText(intCredit+ " Credit Hours");
+              }
+              holder.setupRowItem(grade, position);
         }
 
         @Override
@@ -133,7 +162,7 @@ public class GradeListFragment extends Fragment {
             Grade grade;
             TextView txtGrade, txtNum, txtName, txtHours;
             ImageView imgDelete;
-
+            int position;
 
             public ViewForumHolder(View view) {
                 super(view);
@@ -146,6 +175,7 @@ public class GradeListFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         db.gradeDao().delete(grade);
+                        removeItem(position);
                     }
                 });
 
@@ -153,8 +183,8 @@ public class GradeListFragment extends Fragment {
             }
 
             @RequiresApi(api = Build.VERSION_CODES.O)
-            public void setupRowItem(Grade grade){
-
+            public void setupRowItem(Grade grade, int position){
+                this.position = position;
                 this.grade = grade;
                 txtName.setText(grade.courseName);
                 txtNum.setText(grade.courseNumber);
@@ -174,13 +204,15 @@ public class GradeListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_grade_list, container, false);
+        getActivity().setTitle("Grade List");
         db = Room.databaseBuilder(getContext(), AppDatabase.class, "grade.db")
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
                 .build();
-        txtGPA = view.findViewById(R.id.txtGPA);
-        txtHours = view.findViewById(R.id.txtHours);
+        txtGPAF = view.findViewById(R.id.txtGPA);
+        txtHoursF = view.findViewById(R.id.txtHours);
         recyclerGrades = view.findViewById(R.id.recyclerCourseList);
         layoutManager = new LinearLayoutManager(getContext());
         recyclerGrades.setLayoutManager(layoutManager);
@@ -188,6 +220,8 @@ public class GradeListFragment extends Fragment {
                 layoutManager.getOrientation());
         recyclerGrades.addItemDecoration(dividerItemDecoration);
         ArrayList<Grade> grades = (ArrayList<Grade>) db.gradeDao().getAll();
+        intTotalGPA = 0;
+        intCredit = 0;
         adapter = new GradeRecyclerViewAdapter(getContext(), grades);
         recyclerGrades.setAdapter(adapter);
 
